@@ -358,6 +358,27 @@ returns
 
   def self.create_from_hash!(hash)
 
+    saml_roles = hash[:extra][:raw_info].all["Role"]
+    zammad_roles = []
+    Role.all.each do |role|
+      zammad_roles.append(role.name)
+    end
+    matching_roles = saml_roles.intersection(zammad_roles)
+
+    raise Exceptions::UnprocessableEntity, 'No roles provided' if matching_roles.empty?
+
+    matching_role_ids = []
+    Role.all.each do |role|
+      if role.name.in? matching_roles
+        matching_role_ids.append(role.id)
+      end
+    end
+    # logger.error saml_roles
+    # logger.error zammad_roles
+    # logger.error matching_roles
+    # logger.error matching_role_ids
+    # raise Exceptions::UnprocessableEntity
+
     url = ''
     hash['info']['urls']&.each_value do |local_url|
       next if local_url.blank?
@@ -374,7 +395,8 @@ returns
         address:       hash['info']['location'],
         note:          hash['info']['description'],
         source:        hash['provider'],
-        role_ids:      Role.signup_role_ids,
+        role_ids:      matching_role_ids,
+        # role_ids:      Role.signup_role_ids,
         updated_by_id: 1,
         created_by_id: 1,
       }
