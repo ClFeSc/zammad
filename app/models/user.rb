@@ -358,26 +358,9 @@ returns
 
   def self.create_from_hash!(hash)
 
+    # TODO: Check whether we are in SAML mode
     saml_roles = hash[:extra][:raw_info].all["Role"]
-    zammad_roles = []
-    Role.all.each do |role|
-      zammad_roles.append(role.name)
-    end
-    matching_roles = saml_roles.intersection(zammad_roles)
-
-    raise Exceptions::UnprocessableEntity, 'No roles provided' if matching_roles.empty?
-
-    matching_role_ids = []
-    Role.all.each do |role|
-      if role.name.in? matching_roles
-        matching_role_ids.append(role.id)
-      end
-    end
-    # logger.error saml_roles
-    # logger.error zammad_roles
-    # logger.error matching_roles
-    # logger.error matching_role_ids
-    # raise Exceptions::UnprocessableEntity
+    matching_role_ids = Role.get_matching_role_ids(saml_roles)
 
     url = ''
     hash['info']['urls']&.each_value do |local_url|

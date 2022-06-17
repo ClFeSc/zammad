@@ -81,6 +81,24 @@ returns
     Role.where(active: true, default_at_signup: true)
   end
 
+  def self.get_matching_role_ids(input_roles)
+    zammad_roles = []
+    Role.all.each do |role|
+      zammad_roles.append(role.name)
+    end
+    matching_roles = input_roles.intersection(zammad_roles)
+
+    raise Exceptions::UnprocessableEntity, 'No roles provided' if matching_roles.empty?
+
+    matching_role_ids = []
+    Role.all.each do |role|
+      if role.name.in? matching_roles
+        matching_role_ids.append(role.id)
+      end
+    end
+    return matching_role_ids
+  end
+
 =begin
 
 get signup role ids

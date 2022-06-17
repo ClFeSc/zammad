@@ -37,6 +37,12 @@ class Authorization < ApplicationModel
         end
       end
 
+      # Set roles accordingly from SAML response
+      # TODO: Only if in SAML mode
+      saml_roles = hash[:extra][:raw_info].all["Role"]
+      user_roles = Role.get_matching_role_ids(saml_roles)
+      user.role_ids = user_roles
+
       # update image if needed
       if hash['info']['image'].present?
         avatar = Avatar.add(
