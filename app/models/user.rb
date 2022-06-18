@@ -357,10 +357,12 @@ returns
 =end
 
   def self.create_from_hash!(hash)
-
-    # TODO: Check whether we are in SAML mode
-    saml_roles = hash[:extra][:raw_info].all["Role"]
-    matching_role_ids = Role.get_matching_role_ids(saml_roles)
+    matching_role_ids = nil
+    if Setting.get('auth_saml_credentials')['role_sync']
+      # Set roles accordingly from SAML response
+      saml_roles = hash[:extra][:raw_info].all["Role"]
+      matching_role_ids = Role.get_matching_role_ids(saml_roles)
+    end
 
     url = ''
     hash['info']['urls']&.each_value do |local_url|
@@ -378,8 +380,7 @@ returns
         address:       hash['info']['location'],
         note:          hash['info']['description'],
         source:        hash['provider'],
-        role_ids:      matching_role_ids,
-        # role_ids:      Role.signup_role_ids,
+        role_ids:      matching_role_ids || Role.signup_role_ids,
         updated_by_id: 1,
         created_by_id: 1,
       }
