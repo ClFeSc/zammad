@@ -5541,6 +5541,10 @@ msgid "IDP SSO target URL"
 msgstr "IDP SSO Ziel-URL"
 
 #: db/seeds/settings.rb
+msgid "Synchronize roles"
+msgstr "Rollen synchronisieren"
+
+#: db/seeds/settings.rb
 msgid "IDP certificate"
 msgstr "IDP-Zertifikat"
 

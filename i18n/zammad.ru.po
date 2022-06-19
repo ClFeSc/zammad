@@ -5535,6 +5535,10 @@ msgstr "Идентификатор (ID)"
 #: db/seeds/settings.rb
 msgid "IDP SSO target URL"
 msgstr ""
+
+#: db/seeds/settings.rb
+msgid "Synchronize roles"
+msgstr ""
 "Целевой URL системы единого входа для поставщика идентификационной "
 "информации (IDP SSO)"
 
