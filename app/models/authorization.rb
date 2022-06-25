@@ -39,9 +39,11 @@ class Authorization < ApplicationModel
 
       if Setting.get('auth_saml_credentials')['role_sync']
         # Set roles accordingly from SAML response
-        saml_roles = hash[:extra][:raw_info].all["Role"]
-        user_roles = Role.get_matching_role_ids(saml_roles)
-        user.role_ids = user_roles
+        saml_roles = Role.get_role_names_from_saml(hash)
+        if saml_roles
+          user_roles = Role.get_matching_role_ids(saml_roles)
+          user.role_ids = user_roles
+        end
       end
 
       # update image if needed

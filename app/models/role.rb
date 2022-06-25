@@ -81,6 +81,10 @@ returns
     Role.where(active: true, default_at_signup: true)
   end
 
+  def self.get_role_names_from_saml(hash)
+    return hash&.[](:extra)&.[](:raw_info)&.all&.[]("Role")
+  end
+
   def self.get_matching_role_ids(input_roles)
     zammad_roles = []
     Role.all.each do |role|

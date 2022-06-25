@@ -360,8 +360,10 @@ returns
     matching_role_ids = nil
     if Setting.get('auth_saml_credentials')['role_sync']
       # Set roles accordingly from SAML response
-      saml_roles = hash[:extra][:raw_info].all["Role"]
-      matching_role_ids = Role.get_matching_role_ids(saml_roles)
+      saml_roles = Role.get_role_names_from_saml(hash)
+      if saml_roles
+        matching_role_ids = Role.get_matching_role_ids(saml_roles)
+      end
     end
 
     url = ''
